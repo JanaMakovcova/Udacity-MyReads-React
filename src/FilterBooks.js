@@ -1,8 +1,11 @@
 import React, {Component} from 'react'
 import Changer from './Changer'
 import './App.css'
+//import Book from './Book'
 import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
+import { Link } from 'react-router-dom'
+
 
 class FilterBooks extends Component {
   state = {
@@ -30,29 +33,33 @@ clearQuery = (query) => {
         showingBooksFilter.sort(sortBy('title'))
        return (
     <div>
-        <div className='search-books-input-wrapper'>
-        <div className='search-books-bar'>
-           <input
-            className='close-search'
-            type='text'
-            placeholder='Search books'
-            value={this.state.query}
-            onChange={(event) => this.updateQuery(event.target.value) }
-        />
-        </div>
-           </div>
-         
-        <div className="list-books">
-        
-        
-        <div className="list-books-content">
-          <div>
 
-            <div className="bookshelf">
-              <h2 className="bookshelf-title">Filtered Books</h2>
-              <div className="bookshelf-books">
-                <ol className="books-grid">
-                {showingBooksFilter.map((book) => (
+
+  <div className="search-books">
+            <div className="search-books-bar">
+              <Link className="close-search" to='/'>Close</Link>
+
+              <div className="search-books-input-wrapper">
+                {/*
+                  NOTES: The search from BooksAPI is limited to a particular set of search terms.
+                  You can find these search terms here:
+                  https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
+
+                  However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
+                  you don't find a specific author or title. Every search is limited by search terms.
+                */}
+                <input 
+                type="text" 
+                placeholder="Search by title or author"
+                value={this.state.query}
+                onChange={(event) => this.updateQuery(event.target.value)}
+                />
+
+              </div>
+            </div>
+            <div className="search-books-results">
+            <ol className="books-grid">
+            {showingBooksFilter.map((book) => (
                   <li key={book.id}>
                       <div className="book">
                       <div className="book-top">
@@ -65,22 +72,14 @@ clearQuery = (query) => {
                       <div className="book-authors">{book.authors}</div>       
                       </div>
                   </li>
-                ))}               
-                </ol>
-              </div>
-            </div>
-
+                ))}            
             
-
-           
-
-
+            
+            </ol>
+            </div>
           </div>
-        </div>
-        <div className="open-search">
-          <a onClick={() => this.setState({ showSearchPage: true })}>Add a book</a>
-        </div>
-      </div>
+
+      
       </div>
        )
 }
