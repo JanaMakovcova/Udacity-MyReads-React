@@ -20,17 +20,18 @@ class Book extends Component {
                           width: 128, height: 193, backgroundImage: `url(${this.props.bookSelected.imageLinks.thumbnail})`
                       }}/>
         <div className="book-shelf-changer">
-            <select onChange={this.handleSubmit}>
-                <option value="none" disabled> Generovano pres React Move to...</option>
+            <select onChange={this.handleSubmit} defaultValue={this.props.bookSelected.shelf}>
+                <option value="move" disabled> Move to...</option>
                 <option value="currentlyReading">Currently Reading</option>
                 <option value="wantToRead">Want to Read</option>
                 <option value="read">Read</option>
                 <option value="none">None</option>
             </select>
             </div>
+            </div>
                 <div className="book-title">{this.props.bookSelected.title}</div>
                 <div className="book-authors">{this.props.bookSelected.authors}</div>       
-                </div>
+                
         </div>
       </li>
     )

@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
 //import PropTypes from 'prop-types'
-import Changer from './Changer'
 import Book from './Book'
 import './App.css'
+import { Link } from 'react-router-dom'
+
 
 class ListBooks extends Component {
   
@@ -50,18 +51,9 @@ class ListBooks extends Component {
                 <ol className="books-grid">
 
                   {showingBooksRead.map((book) => (
-                    <li key={book.id}>
-                        <div className="book">
-                        <div className="book-top">
-                        <div className='book-cover' style={{
-                            width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})`
-                        }}/>
-                        <Changer />
-                        </div>
-                        <div className="book-title">{book.title}</div>
-                        <div className="book-authors">{book.authors}</div>       
-                        </div>
-                    </li>
+                    <Book key={book.id}
+                    bookSelected={book}
+                    change={this.props.onChangeShelf}/> 
                     ))}   
                 </ol>
               </div>
@@ -69,7 +61,8 @@ class ListBooks extends Component {
           </div>
         </div>
         <div className="open-search">
-          <a onClick={() => this.setState({ showSearchPage: true })}>Add a book</a>
+          <Link to='/filter'>Add a book</Link>
+
         </div>
       </div>
        )

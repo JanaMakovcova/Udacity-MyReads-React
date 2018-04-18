@@ -1,36 +1,77 @@
 import React, {Component} from 'react'
-import Changer from './Changer'
+//import Changer from './Changer'
 import './App.css'
-//import Book from './Book'
-import escapeRegExp from 'escape-string-regexp'
+import Book from './Book'
+//import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
 import { Link } from 'react-router-dom'
+import * as BooksAPI from './BooksAPI'
 
 
 class FilterBooks extends Component {
   state = {
-    query: ''
+    query: '',
+    booksSearched: [],
+    booksLibary: []
 }
 
+componentWillMount() {
+    this.setState({
+      booksLibary: this.props.books
+    })
+  }
+
+changeShelfSearch = (book, shelf) => {
+    let newBooks = this.state.booksSearched
+    const index = this.state.booksSearched.findIndex((b) => b.id === book.id);
+    newBooks[index].shelf = shelf
+    this.setState({booksSearched: newBooks})
+
+    let myLibary = this.props.books
+    const indexLib = myLibary.findIndex((b) => b.id === book.id)
+    if (indexLib !== -1) {
+        myLibary[indexLib].shelf = shelf
+        BooksAPI.update(book, shelf).then(this.setState({booksLibary: myLibary}))
+    } else {
+        book.shelf = shelf
+        myLibary.push(book)
+        BooksAPI.update(book, shelf).then(this.setState({booksLibary: myLibary}))
+
+    }
+    
+  }
+
+
 updateQuery = (query) => {
-    this.setState({ query: query.trim() })
+    this.setState({ query:  query })
+    BooksAPI.search(query.trim(), 20).then((booksResponse) => {
+        if (!booksResponse)
+        this.setState({booksSearched: []})
+        else {
+            //booksResponse.sort(sortBy('title'))
+            let booksResponseWithSelect = booksResponse
+
+            for (let book of booksResponseWithSelect) {
+                for (let b of this.state.booksLibary) {
+                    if (b.id === book.id) {
+                        book.shelf = b.shelf
+                    } else {
+                        book.shelf = "none"
+                    }
+                   
+                  }
+              }
+
+            this.setState({booksSearched: booksResponseWithSelect})
+        }
+      })
     }
 clearQuery = (query) => {
     this.setState({query: ''})
 }
 
     render(){
-      const { books } = this.props
-      const { query } = this.state
-      let showingBooksFilter
-      if (query){
-          const match = new RegExp(escapeRegExp(query), 'i')
-          showingBooksFilter = books.filter((book) => match.test(book.title) )
-      } else {
-          showingBooksFilter =  books
-      }
-
-        showingBooksFilter.sort(sortBy('title'))
+          
        return (
     <div>
 
@@ -40,15 +81,7 @@ clearQuery = (query) => {
               <Link className="close-search" to='/'>Close</Link>
 
               <div className="search-books-input-wrapper">
-                {/*
-                  NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                  You can find these search terms here:
-                  https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-                  However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                  you don't find a specific author or title. Every search is limited by search terms.
-                */}
-                <input 
+               <input 
                 type="text" 
                 placeholder="Search by title or author"
                 value={this.state.query}
@@ -58,22 +91,12 @@ clearQuery = (query) => {
               </div>
             </div>
             <div className="search-books-results">
-            <ol className="books-grid">
-            {showingBooksFilter.map((book) => (
-                  <li key={book.id}>
-                      <div className="book">
-                      <div className="book-top">
-                      <div className='book-cover' style={{
-                          width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})`
-                      }}/>
-                      <Changer />
-                      </div>
-                      <div className="book-title">{book.title}</div>
-                      <div className="book-authors">{book.authors}</div>       
-                      </div>
-                  </li>
-                ))}            
-            
+            <ol className="books-grid">      
+            {(this.state.booksSearched) && (this.state.booksSearched.map((book) => (
+                  <Book key={book.id}
+                  bookSelected={book}
+                  change={this.changeShelfSearch}/> 
+                )))}          
             
             </ol>
             </div>
