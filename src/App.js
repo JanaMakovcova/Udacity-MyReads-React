@@ -36,6 +36,7 @@ class BooksApp extends React.Component {
           <Route exact path="/filter" render={() => (
             <FilterBooks 
             books={this.state.books}
+            onChangeShelf={this.changeShelf}
           />
           )}/>
       

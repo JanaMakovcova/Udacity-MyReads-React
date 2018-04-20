@@ -11,15 +11,9 @@ import * as BooksAPI from './BooksAPI'
 class FilterBooks extends Component {
   state = {
     query: '',
-    booksSearched: [],
-    booksLibary: []
+    booksSearched: [],  
 }
 
-componentWillMount() {
-    this.setState({
-      booksLibary: this.props.books
-    })
-  }
 
 changeShelfSearch = (book, shelf) => {
     let newBooks = this.state.booksSearched
@@ -31,11 +25,10 @@ changeShelfSearch = (book, shelf) => {
     const indexLib = myLibary.findIndex((b) => b.id === book.id)
     if (indexLib !== -1) {
         myLibary[indexLib].shelf = shelf
-        BooksAPI.update(book, shelf).then(this.setState({booksLibary: myLibary}))
+        myLibary.onchangeShelf(book, shelf)
     } else {
-        book.shelf = shelf
-        myLibary.push(book)
-        BooksAPI.update(book, shelf).then(this.setState({booksLibary: myLibary}))
+        
+        myLibary.onchangeShelf(book, shelf)
 
     }
     
@@ -50,9 +43,9 @@ updateQuery = (query) => {
         else {
             //booksResponse.sort(sortBy('title'))
             let booksResponseWithSelect = booksResponse
-
+            let myLibary = this.props.books
             for (let book of booksResponseWithSelect) {
-                for (let b of this.state.booksLibary) {
+                for (let b of myLibary) {
                     if (b.id === book.id) {
                         book.shelf = b.shelf
                     } else {
