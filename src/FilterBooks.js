@@ -20,15 +20,16 @@ changeShelfSearch = (book, shelf) => {
     const index = this.state.booksSearched.findIndex((b) => b.id === book.id);
     newBooks[index].shelf = shelf
     this.setState({booksSearched: newBooks})
+    console.log("filterBooks changeShelfSearch")
 
     let myLibary = this.props.books
     const indexLib = myLibary.findIndex((b) => b.id === book.id)
     if (indexLib !== -1) {
         myLibary[indexLib].shelf = shelf
-        myLibary.onchangeShelf(book, shelf)
+        this.props.onChangeShelf(book, shelf)
     } else {
-        
-        myLibary.onchangeShelf(book, shelf)
+        book.shelf = shelf
+        this.props.onChangeShelf(book, shelf)
 
     }
     
@@ -38,20 +39,25 @@ changeShelfSearch = (book, shelf) => {
 updateQuery = (query) => {
     this.setState({ query:  query })
     BooksAPI.search(query.trim(), 20).then((booksResponse) => {
-        if (!booksResponse)
+        if (booksResponse === undefined)
         this.setState({booksSearched: []})
         else {
-            //booksResponse.sort(sortBy('title'))
+            booksResponse.sort(sortBy('title'))
             let booksResponseWithSelect = booksResponse
-            let myLibary = this.props.books
+            console.log(booksResponseWithSelect)
+            let myLibrary = this.props.books
+            console.log(myLibrary)
             for (let book of booksResponseWithSelect) {
-                for (let b of myLibary) {
+                book.shelf = "none"
+                if (book.imageLinks.thumbnail === undefined) {
+                    book.imageLinks.thumbnail = ''
+                    console.log(book)
+                }
+                for (let b of myLibrary) {                   
                     if (b.id === book.id) {
                         book.shelf = b.shelf
-                    } else {
-                        book.shelf = "none"
-                    }
-                   
+                        
+                    }                  
                   }
               }
 

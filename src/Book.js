@@ -20,7 +20,7 @@ class Book extends Component {
                           width: 128, height: 193, backgroundImage: `url(${this.props.bookSelected.imageLinks.thumbnail})`
                       }}/>
         <div className="book-shelf-changer">
-            <select onChange={this.handleSubmit} defaultValue={this.props.bookSelected.shelf}>
+            <select onChange={this.handleSubmit} defaultValue={this.props.bookSelected.shelf } >
                 <option value="move" disabled> Move to...</option>
                 <option value="currentlyReading">Currently Reading</option>
                 <option value="wantToRead">Want to Read</option>

@@ -6,8 +6,8 @@ class Changer extends Component {
     render(){
        return (
         <div className="book-shelf-changer">
-            <select>
-                <option value="none" disabled> Generovano pres React Move to...</option>
+            <select onChange={this.handleSubmit} defaultValue={this.props.bookSelected.shelf } >
+                <option value="move" disabled> Move to...</option>
                 <option value="currentlyReading">Currently Reading</option>
                 <option value="wantToRead">Want to Read</option>
                 <option value="read">Read</option>
