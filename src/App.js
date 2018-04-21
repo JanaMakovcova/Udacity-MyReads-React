@@ -15,7 +15,6 @@ class BooksApp extends React.Component {
       this.setState({books: books})
     })
   }
-
   
   changeShelf = (book, shelf) => {
     let newBooks = this.state.books
@@ -27,12 +26,8 @@ class BooksApp extends React.Component {
       book.shelf = shelf
       newBooks.push(book, shelf)
       BooksAPI.update(book, shelf).then(this.setState({books: newBooks}))
-
     }
-  
-
-
-
+ 
   }
 
   render() {
@@ -50,7 +45,6 @@ class BooksApp extends React.Component {
             onChangeShelf={this.changeShelf}
           />
           )}/>
-      
       </div>
     )
   }

@@ -1,12 +1,9 @@
 import React, {Component} from 'react'
-//import Changer from './Changer'
 import './App.css'
 import Book from './Book'
-//import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
 import { Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
-
 
 class FilterBooks extends Component {
   state = {
@@ -14,13 +11,11 @@ class FilterBooks extends Component {
     booksSearched: [],  
 }
 
-
 changeShelfSearch = (book, shelf) => {
     let newBooks = this.state.booksSearched
     const index = this.state.booksSearched.findIndex((b) => b.id === book.id);
     newBooks[index].shelf = shelf
     this.setState({booksSearched: newBooks})
-    console.log("filterBooks changeShelfSearch")
 
     let myLibary = this.props.books
     const indexLib = myLibary.findIndex((b) => b.id === book.id)
@@ -30,29 +25,26 @@ changeShelfSearch = (book, shelf) => {
     } else {
         book.shelf = shelf
         this.props.onChangeShelf(book, shelf)
-
-    }
-    
+    }   
   }
-
 
 updateQuery = (query) => {
     this.setState({ query:  query })
     BooksAPI.search(query.trim(), 20).then((booksResponse) => {
-        if (booksResponse === undefined)
+        if (!booksResponse || booksResponse.error)
         this.setState({booksSearched: []})
         else {
             booksResponse.sort(sortBy('title'))
             let booksResponseWithSelect = booksResponse
-            console.log(booksResponseWithSelect)
             let myLibrary = this.props.books
-            console.log(myLibrary)
             for (let book of booksResponseWithSelect) {
                 book.shelf = "none"
-                if (book.imageLinks.thumbnail === undefined) {
-                    book.imageLinks.thumbnail = ''
+                if (book.imageLinks === undefined) {
+                    let imageLinks = {smallThumbnail: '', thumbnail: ''}
+                    book.imageLinks = imageLinks
                     console.log(book)
                 }
+                
                 for (let b of myLibrary) {                   
                     if (b.id === book.id) {
                         book.shelf = b.shelf
@@ -60,25 +52,17 @@ updateQuery = (query) => {
                     }                  
                   }
               }
-
             this.setState({booksSearched: booksResponseWithSelect})
         }
       })
     }
-clearQuery = (query) => {
-    this.setState({query: ''})
-}
 
-    render(){
-          
+    render(){     
        return (
     <div>
-
-
-  <div className="search-books">
+        <div className="search-books">
             <div className="search-books-bar">
               <Link className="close-search" to='/'>Close</Link>
-
               <div className="search-books-input-wrapper">
                <input 
                 type="text" 
@@ -86,7 +70,6 @@ clearQuery = (query) => {
                 value={this.state.query}
                 onChange={(event) => this.updateQuery(event.target.value)}
                 />
-
               </div>
             </div>
             <div className="search-books-results">
@@ -96,12 +79,9 @@ clearQuery = (query) => {
                   bookSelected={book}
                   change={this.changeShelfSearch}/> 
                 )))}          
-            
             </ol>
             </div>
-          </div>
-
-      
+        </div>     
       </div>
        )
 }
