@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-//import PropTypes from 'prop-types'
 import Book from './Book'
 import './App.css'
 import { Link } from 'react-router-dom'
@@ -14,7 +13,7 @@ class ListBooks extends Component {
   }
   
     render(){
-      let shelves = [{currentlyReading: 'Currently Reading'}, {wantToRead: 'Want to read'}, {read: 'Read'}]
+      const shelves = [{currentlyReading: 'Currently Reading'}, {wantToRead: 'Want to read'}, {read: 'Read'}]
        
        return (
         <div className="list-books">
